@@ -1,11 +1,8 @@
-### Importing Pgzero (and Rect from pygame) ###
 from pgzero.actor import Actor
 from pygame import Rect
 
-### Importing script ###
 from scripts.settings import *
 
-### Importing extra libs ###
 import math
 import random
 
@@ -16,11 +13,11 @@ class Player(Actor):
         super().__init__('player', (WIDTH // 2,HEIGHT // 2))
         self.speed = 3.5
 
-        self.height = 16
-        self.width = 12
+        self.height = 12
+        self.width = 8
 
         self.anchor = ('center','bottom')
-
+        
     def move(self, keyboard):
 
         xdir = (keyboard.d or keyboard.right) - (keyboard.a or keyboard.left)
