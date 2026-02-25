@@ -10,11 +10,14 @@ class Player(Actor):
 
     def __init__(self):
 
-        super().__init__('player', (WIDTH // 2,HEIGHT // 2))
+        super().__init__('player_1', (WIDTH // 2,HEIGHT // 2))
+
         self.speed = 3.5
 
-        self.height = 12
-        self.width = 8
+        self.sprite_animation = [f"player_{i}" for i in range(1,5)]
+        self.animation_cycle = 0
+        self.hitbox_height = 8
+        self.hitbox_width = 6
 
         self.anchor = ('center','bottom')
         
@@ -33,16 +36,18 @@ class Player(Actor):
             self.apply_boundaries()
 
     def apply_boundaries(self):
-        if self.hitbox().right > WIDTH - 6 * 4: self.x = WIDTH - 6 * 4 - (self.width // 2 * 4)
-        if self.hitbox().left < 6 * 4: self.x = 6 * 4 + (self.width // 2 * 4)
-        if self.hitbox().bottom > HEIGHT - 24: self.y = HEIGHT - 24
-        if self.hitbox().top < 24: self.y = 24 + (self.height * 4)
-        
+
+        map_gap = 6 * 4
+
+        if self.hitbox().right > WIDTH - map_gap: self.x = WIDTH - map_gap - self.hitbox_width // 2 * 4
+        if self.hitbox().left < map_gap: self.x = map_gap + self.hitbox_width // 2 * 4
+        if self.hitbox().bottom > HEIGHT - map_gap: self.y = HEIGHT - map_gap
+        if self.hitbox().top < map_gap: self.y = map_gap + self.hitbox_height * 4
 
     def hitbox(self):
         return Rect(
-            self.x - (self.width // 2 * 4), 
-            self.y - self.height * 4,
-            self.width * 4,
-            self.height * 4,
+            self.x - self.hitbox_width // 2 * 4, 
+            self.y - self.hitbox_height * 4, 
+            self.hitbox_width * 4,
+            self.hitbox_height * 4
         )
