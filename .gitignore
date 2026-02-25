@@ -1,0 +1,22 @@
+# Ambientes Virtuais
+.venv/
+venv/
+ENV/
+env/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code
+.vscode/
+
+# Distribuição / Build (das imagens anteriores)
+dist/
+build/
+*.spec
+
+# Sistema
+.DS_Store
+Thumbs.db
