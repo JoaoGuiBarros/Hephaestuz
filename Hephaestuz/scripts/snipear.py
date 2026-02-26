@@ -9,6 +9,7 @@ class Snipear(Actor):
     def __init__(self, player):
 
         super().__init__('snipear_1')
+        self.kills = 0
         self.impacts = []
         self.pos = (-100, -100)
         self.has_shadow = False
@@ -91,6 +92,7 @@ class Snipear(Actor):
                 if temp_rect.colliderect(enemy.hitbox()):
                     self.impacts.append((enemy.topleft))
                     enemies.remove(enemy)
+                    self.kills += 1
                     if self.sound_allowed:
                         self.sound_allowed = False
                         self.sound_trigger = True

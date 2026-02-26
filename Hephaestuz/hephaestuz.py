@@ -15,6 +15,7 @@ is_mute = False
 background = Actor('background')
 
 game_timer = 0
+game_score = 0
 game_state = "menu_state"
 
 is_paused = True
@@ -138,7 +139,7 @@ def animate(obj):
 
 def draw():
 
-    global game_state
+    global game_state, game_score, game_timer
 
     background.draw()
 
@@ -180,8 +181,43 @@ def draw():
             fontsize=20, 
             fontname=FONT,
             color="white",
-            shadow=(1, 1)
+            shadow=(2, 2)
         )
+
+        for i in range(-1,2):
+            pos = (WIDTH // 2 + 52 * i - 24, 8)
+            if player.health >= i + 2:
+                screen.blit('health', pos)
+            else:
+                screen.blit('health_slot', pos)
+
+        mins = str(game_timer // 3600)
+        for i in range(2 - len(mins)) : mins = "0" + mins
+        secs = str((game_timer // 60) % 60)
+        for i in range(2 - len(secs)) : secs = "0" + secs
+
+        screen.draw.text(
+            f"TIME: {mins}:{secs}", 
+            topleft=(8, 8), 
+            fontsize=40, 
+            fontname=FONT,
+            color="white",
+            shadow=(2, 2)
+        )
+
+        game_score = snipear.kills
+        text = str(game_score)
+        for i in range(8 - len(text)): text = "0" + text
+
+        screen.draw.text(
+            f"SCORE: {text}", 
+            topright=(WIDTH - 8, 8), 
+            fontsize=40, 
+            fontname=FONT,
+            color="white",
+            shadow=(2, 2)
+        )
+    
 
     if game_state == "restart_state":
         screen.fill((0,0,0))
@@ -222,7 +258,7 @@ def draw():
 
 
 def on_key_down(key):
-    global spawn_timer, game_timer, game_state, is_paused, hitstop, enemies, is_mute
+    global spawn_timer, game_timer, game_state, is_paused, hitstop, enemies, is_mute, game_score
 
     if key == keys.RETURN and (game_state == "restart_state" or game_state == "menu_state"):
         if not is_mute: sounds.interact.play()
@@ -244,6 +280,8 @@ def on_key_down(key):
             snipear.attack_buffer = 0
             snipear.cooldown = 0
             game_timer = 0
+            game_score = 0
+            snipear.kills = 0
             hitstop = 0
 
         game_state = "play_state"
@@ -268,11 +306,13 @@ def on_key_down(key):
         player.sprite_animation = player.idle_animation
         player.image = player.sprite_animation[0]
         snipear.pos = (-100,-100)
+        snipear.kills = 0
         player.animation_cycle = 0
         snipear.attack_buffer = 0
         snipear.cooldown = 0
         game_timer = 0
         hitstop = 0
+        game_score = 0
         game_state = "menu_state"
         is_paused = True
 
