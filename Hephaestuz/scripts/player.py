@@ -11,25 +11,28 @@ class Player(Actor):
     def __init__(self):
 
         super().__init__('player_idle_1', (WIDTH // 2,HEIGHT // 2))
-
+        
         self.state = "idle"
         self.speed = 3.5
-        self.iframes = 0
-        self.hitflash = False
         self.health = 3
-        self.has_shadow = True
-        self.idle_animation = ["player_idle_1" for i in range(2)] + ["player_idle_2" for i in range(2)]
-        self.walking_animation = [f"player_{i}" for i in range(1,5)]
-        self.sprite_animation = self.idle_animation
-        self.animation_cycle = 0
+        self.iframes = 0
+
+        self.anchor = ('center','bottom')
         self.hitbox_height = 8
         self.hitbox_width = 6
-        self.anchor = ('center','bottom')
+
+        self.idle_animation = ["player_idle_1" for i in range(2)] + ["player_idle_2" for i in range(2)]
+        self.walking_animation = [f"player_walk_{i}" for i in range(1,5)]
+        self.sprite_animation = self.idle_animation
+        self.animation_cycle = 0
+
+        self.hitflash = False
+        self.has_shadow = True
         
     def move(self, keyboard):
 
-        xdir = (keyboard.d or keyboard.right) - (keyboard.a or keyboard.left)
-        ydir = (keyboard.s or keyboard.down) - (keyboard.w or keyboard.up)
+        xdir = keyboard.d - keyboard.a 
+        ydir = keyboard.s - keyboard.w
 
         if abs(xdir) or abs(ydir):
              
@@ -39,15 +42,15 @@ class Player(Actor):
             self.y += (ydir / magnitude) * self.speed
 
             self.apply_boundaries()
+
             self.sprite_animation = self.walking_animation
 
-        else: 
-            self.sprite_animation = self.idle_animation
+        else: self.sprite_animation = self.idle_animation
 
 
     def apply_boundaries(self):
 
-        map_gap = 6 * 4
+        map_gap = 8
 
         if self.hitbox().right > WIDTH - map_gap: self.x = WIDTH - map_gap - self.hitbox_width // 2 * 4
         if self.hitbox().left < map_gap: self.x = map_gap + self.hitbox_width // 2 * 4
