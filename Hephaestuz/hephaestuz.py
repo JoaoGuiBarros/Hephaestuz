@@ -30,6 +30,7 @@ game_state = "menu_state"
 
 is_paused = True
 hitstop = 0 # hit "pause" effect
+hide_tips = False
 
 player = Player()
 snipear = Snipear(player)
@@ -84,7 +85,8 @@ def collision_to_player(enemy):
         player.iframes = 120
         
         music_vol = 0
-        hitstop = 8
+        hitstop = 10
+        player.speed = 12
 
 def enemy_manager():
 
@@ -199,30 +201,40 @@ def draw():
     background.draw()
 
     if game_state == "menu_state":
-        screen.fill((34,32,52))
+        screen.blit('black_screen', (0,0))
         screen.draw.text(
             "HEPHAESTUZ",
-            center=(WIDTH // 2, HEIGHT // 2 - 80), 
+            center=(WIDTH // 2, HEIGHT // 2 - 100), 
             fontsize=120, 
             fontname=FONT,
             color="white",
-            shadow=(1, 1),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
 
-        screen.draw.text(
-            f"ENTER Start || M to {"Mute" if not is_mute else "Demute"} || ESC to Quit", 
+        if not hide_tips: screen.draw.text(
+            f"ENTER Start || M to {"Mute" if not is_mute else "Demute"} || ESC to Quit || H to Hide tips", 
             center=(WIDTH // 2, HEIGHT - 10), 
             fontsize=20, 
             fontname=FONT,
             color="grey",
-            shadow=(2, 2),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
 
     render_list = [player, snipear] + enemies
     render_list.sort(key=lambda obj: obj.y)
 
+    if len(snipear.impacts) > 0:
+
+        for impact in snipear.impacts:
+
+            screen.blit('impact', impact["pos"])
+            if hitstop == 0: 
+
+                impact["life"] -= 1
+                if impact["life"] == 0: snipear.impacts.remove(impact)
+                
     for obj in render_list:
 
         if obj.has_shadow and not is_paused:
@@ -239,21 +251,13 @@ def draw():
 
         obj.draw() 
 
-    if len(snipear.impacts) > 0:
-
-        for impact in snipear.impacts:
-
-            screen.blit('impact', impact["pos"])
-            if hitstop == 0: 
-
-                impact["life"] -= 1
-                if impact["life"] == 0: snipear.impacts.remove(impact)
+    
 
     if snipear.shot_trail["life"] > 0:
         
         if snipear.shot_cooldown == snipear.shot_attack_speed: 
             snipear.shot_cooldown  -= 1 
-            hitstop = 5
+            hitstop = 10
 
         angle_rad = math.atan2(
             snipear.shot_trail["end_pos"][1] - snipear.shot_trail["init_pos"][1],
@@ -277,18 +281,18 @@ def draw():
 
     if game_state == "play_state":
 
-        screen.draw.text(
-            f"AWSD to Move || LEFT-CLICK to Attack || RIGHT-CLICK to Shot || M to {"Mute" if not is_mute else "Demute"} || ESC to return to Menu ", 
+        if not hide_tips: screen.draw.text(
+            f"AWSD to Move || M to {"Mute" if not is_mute else "Demute"} || ESC to return to Menu || H to Hide tips", 
             center=(WIDTH // 2, HEIGHT - 10), 
             fontsize=20, 
             fontname=FONT,
             color="grey",
-            shadow=(2, 2),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
 
         for i in range(-1,2):
-            pos = (WIDTH // 2 + 64 * i - 24, 8)
+            pos = (WIDTH // 2 + 64 * i - 28, 8)
             if player.health >= i + 2:
                 screen.blit('health', pos)
             else:
@@ -302,10 +306,10 @@ def draw():
         screen.draw.text(
             f"TIME: {mins}:{secs}", 
             topleft=(8, 8), 
-            fontsize=40, 
+            fontsize=35, 
             fontname=FONT,
             color="white",
-            shadow=(1, 1),
+            shadow=(0,3),
             scolor=(34,32,52)
         )
 
@@ -316,36 +320,53 @@ def draw():
         screen.draw.text(
             f"SCORE: {text}", 
             topright=(WIDTH - 8, 8), 
-            fontsize=40, 
+            fontsize=35, 
             fontname=FONT,
             color="white",
-            shadow=(1, 1),
+            shadow=(0,3),
             scolor=(34,32,52)
         )
+
+        attack_progress = 1 - (snipear.cooldown / snipear.attack_speed)
+        attack_height = attack_progress * 48
+
+        shot_progress = 1 - (snipear.shot_cooldown / snipear.shot_attack_speed)
+        shot_height = shot_progress * 48
+
+        screen.draw.filled_rect(Rect(
+            (16, HEIGHT - 8 - attack_height), 
+            (48, attack_height)
+        ), 'white')
+
+        screen.draw.filled_rect(Rect(
+            (68, HEIGHT - 8 - shot_height), 
+            (48, shot_height)
+        ), (251, 242, 54)) 
+
+        screen.blit('cooldowns', (8 ,HEIGHT - 25 * 4))
     
     if game_state == "restart_state":
 
-        screen.fill((34,32,52))
-
+        screen.blit('black_screen', (0,0))
         screen.draw.text(
             "GAMEOVER", 
-            center=(WIDTH // 2, HEIGHT // 2 - 80), 
+            center=(WIDTH // 2, HEIGHT // 2 - 100), 
             fontsize=120, 
             fontname=FONT,
             color="white",
-            shadow=(1, 1),
+            shadow=(0, 2),
             scolor=(34,32,52)
         )
 
         screen.blit('player_idle_1', (WIDTH // 2 - player.width // 2, HEIGHT // 2 - player.height // 2))
 
-        screen.draw.text(
-            f"ENTER Restart || M to {"Mute" if not is_mute else "Demute"} || ESC to go to Menu", 
+        if not hide_tips: screen.draw.text(
+            f"ENTER Restart || M to {"Mute" if not is_mute else "Demute"} || ESC to go to Menu || H to Hide tips", 
             center=(WIDTH // 2, HEIGHT - 10), 
             fontsize=20, 
             fontname=FONT,
             color="grey",
-            shadow=(2, 2),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
 
@@ -359,7 +380,7 @@ def draw():
             fontsize=30, 
             fontname=FONT,
             color="white" if btn_start_rect.collidepoint(mouse_pos) else "grey",
-            shadow=(1, 1),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
         screen.draw.text(
@@ -368,7 +389,7 @@ def draw():
             fontsize=30, 
             fontname=FONT,
             color="white" if btn_mute_rect.collidepoint(mouse_pos) else "grey",
-            shadow=(1, 1),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
         screen.draw.text(
@@ -377,7 +398,7 @@ def draw():
             fontsize=30, 
             fontname=FONT,
             color="white" if btn_quit_rect.collidepoint(mouse_pos) else "grey",
-            shadow=(1, 1),
+            shadow=(0, 3),
             scolor=(34,32,52)
         )
 
@@ -420,7 +441,7 @@ def reset_attributes():
       
 def on_key_down(key):
 
-    global spawn_timer, game_timer, game_state, is_paused, hitstop, enemies, is_mute, game_score, key_cooldown
+    global game_state, is_paused, is_mute, key_cooldown, hide_tips
 
     if key_cooldown == 0:
 
@@ -457,5 +478,7 @@ def on_key_down(key):
 
         # Quit
         elif key == keys.ESCAPE and is_paused: exit()
+
+        if key == keys.H: hide_tips = not hide_tips
 
 pgzrun.go()

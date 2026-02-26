@@ -14,8 +14,8 @@ class Enemy(Actor):
         self.has_shadow = True
         self.sprite_animation = [f"enemy_{i}" for i in range(1,5)]
         self.animation_cycle = 0
-        self.hitbox_height = 14
-        self.hitbox_width = 14
+        self.hitbox_height = 12
+        self.hitbox_width = 12
         self.anchor = ('center','bottom')
 
     def follow(self, target_pos):

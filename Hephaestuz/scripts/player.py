@@ -10,9 +10,10 @@ class Player(Actor):
 
     def __init__(self):
 
-        super().__init__('player_idle_1', (WIDTH // 2,HEIGHT // 2))
+        super().__init__('player_idle_1', (WIDTH / 2,HEIGHT // 2))
         
         self.state = "idle"
+        self.base_speed = 3.5
         self.speed = 3.5
         self.health = 3
         self.iframes = 0
@@ -30,6 +31,8 @@ class Player(Actor):
         self.has_shadow = True
         
     def move(self, keyboard):
+
+        self.speed += (self.base_speed - self.speed) * .05
 
         xdir = keyboard.d - keyboard.a 
         ydir = keyboard.s - keyboard.w
