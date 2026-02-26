@@ -10,15 +10,20 @@ class Player(Actor):
 
     def __init__(self):
 
-        super().__init__('player_1', (WIDTH // 2,HEIGHT // 2))
+        super().__init__('player_idle_1', (WIDTH // 2,HEIGHT // 2))
 
+        self.state = "idle"
         self.speed = 3.5
-
-        self.sprite_animation = [f"player_{i}" for i in range(1,5)]
+        self.iframes = 0
+        self.hitflash = False
+        self.health = 3
+        self.has_shadow = True
+        self.idle_animation = ["player_idle_1" for i in range(2)] + ["player_idle_2" for i in range(2)]
+        self.walking_animation = [f"player_{i}" for i in range(1,5)]
+        self.sprite_animation = self.idle_animation
         self.animation_cycle = 0
         self.hitbox_height = 8
         self.hitbox_width = 6
-
         self.anchor = ('center','bottom')
         
     def move(self, keyboard):
@@ -34,6 +39,11 @@ class Player(Actor):
             self.y += (ydir / magnitude) * self.speed
 
             self.apply_boundaries()
+            self.sprite_animation = self.walking_animation
+
+        else: 
+            self.sprite_animation = self.idle_animation
+
 
     def apply_boundaries(self):
 

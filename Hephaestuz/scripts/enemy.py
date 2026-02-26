@@ -2,6 +2,7 @@ from pgzero.actor import Actor
 from pygame import Rect
 
 import math
+import random
 
 class Enemy(Actor):
 
@@ -9,14 +10,12 @@ class Enemy(Actor):
 
         super().__init__('enemy_1', pos)
 
-        self.speed = 1.5
-
+        self.speed = random.choice((1.5, 2, 2.5))
+        self.has_shadow = True
         self.sprite_animation = [f"enemy_{i}" for i in range(1,5)]
         self.animation_cycle = 0
-
-        self.hitbox_height = 14
-        self.hitbox_width = 8
-
+        self.hitbox_height = 16
+        self.hitbox_width = 14
         self.anchor = ('center','bottom')
 
     def follow(self, target_pos):
