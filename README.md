@@ -1,24 +1,22 @@
 # Hephaestuz ⚔️
 
-[cite_start]**Hephaestuz** é um jogo de aventura *top-down* (visão aérea) desenvolvido como parte do processo de seleção de tutores de Python (2026)[cite: 3]. O projeto foca em mecânicas de combate fluidas, utilizando uma arma personalizada chamada **Snipear** que combina ataques de curto alcance com um potente laser (Railgun).
+**Hephaestuz** is a top-down action-adventure game focused on tight combat mechanics. Take control of a specialized warrior wielding the **Snipear**—a hybrid weapon that combines rapid melee-style strikes with a devastating high-precision Railgun.
 
-## 🚀 Requisitos Técnicos Atendidos
-[cite_start]O projeto foi desenvolvido estritamente sob as limitações impostas pelos requisitos do teste[cite: 7]:
-- [cite_start]**Tecnologias:** Uso exclusivo de `PgZero`, `math` e `random`[cite: 9, 10, 11].
-- [cite_start]**Gênero:** Aventura point-and-click/Top-down shooter[cite: 32].
-- [cite_start]**Animação:** Sistema de animação de sprites cíclico para estados de movimento e repouso (*idle*)[cite: 25, 34].
-- [cite_start]**Arquitetura:** Orientação a Objetos (Classes) para gerenciamento de herói, inimigos e armas[cite: 23].
+## 🎮 Game Mechanics
+- **Dynamic Combat:** Swap between quick attacks and a charged special shot to clear waves of enemies.
+- **Precision Railgun:** A custom-calculated laser beam that pierces through multiple targets.
+- **Adaptive AI:** Enemies that track and surround the player, requiring constant movement and strategy.
+- **Polished Game Feel:** Includes *hitstop* impact effects and invulnerability frames to ensure every hit feels impactful.
 
-## 🎮 Mecânicas Principais
-- **Snipear Weapon:** Sistema de cooldown duplo (ataque básico e especial).
-- **Railgun Special:** Disparo de alta precisão com rastro calculado via trigonometria.
-- [cite_start]**Enemy AI:** Inimigos com comportamento de perseguição e detecção de colisão[cite: 22].
-- [cite_start]**Game Feel:** Implementação de *hitstop* (pausa de impacto) e *iframes* (frames de invulnerabilidade) para melhorar a experiência do jogador[cite: 27].
+## 🛠️ Technical Highlights
+I built this project to explore the limitations of minimalist game engines, focusing on:
+- **Custom Animation Engine:** Every character features cyclical animations for both movement and idle states to bring the pixel art to life.
+- **OOP Architecture:** Clean, modular code using Python classes to manage game entities and state logic.
+- **Trigonometric Systems:** Custom math-based systems for weapon aiming, projectile trails, and perpendicular offset rendering.
 
-## 🛠️ Como Executar
-1. Certifique-se de ter o Python instalado.
-2. Instale o Pygame Zero: `pip install pgzero`.
-3. Execute o arquivo principal: `pgzrun hephaestuz.py`.
+## 🚀 Getting Started
+1. **Requirements:** Python 3.x and Pygame Zero.
+2. **Installation:** `pip install pgzero`
+3. **Run:** Execute the main entry point: `pgzrun hephaestuz.py`
 
-## 📜 Licença
-[cite_start]Este projeto foi desenvolvido de forma independente e original para fins de avaliação técnica[cite: 28, 44].
+*Developed with passion for retro-style action games.*
