@@ -1,6 +1,6 @@
 # Hephaestuz ⚔️
 
-**Hephaestuz** is a top-down action-adventure game focused on tight combat mechanics. Take control of a specialized warrior wielding the **Snipear**—a hybrid weapon that combines rapid melee-style strikes with a devastating high-precision Railgun.
+**Hephaestuz** is a top-down action game focused on tight combat mechanics. Take control of **Hephaestuz** wielding the **Snipear**—a hybrid weapon that combines rapid melee-style strikes with a devastating high-precision Railgun.
 
 ## 🎮 Game Mechanics
 - **Dynamic Combat:** Swap between quick attacks and a charged special shot to clear waves of enemies.
