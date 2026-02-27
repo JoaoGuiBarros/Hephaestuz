@@ -8,36 +8,42 @@ class Snipear(Actor):
 
     def __init__(self, player):
 
-        super().__init__('snipear_1')
+        super().__init__('snipear_1', (-100, -100))
 
         self.kills = 0
+
         self.impacts = []
         self.shot_trail = {"init_pos": (0,0), "end_pos": (0,0), "life": 0}
-        self.pos = (-100, -100)
+
         self.has_shadow = False
-        self.speed = 3.5
-        self.animation_cycle = -1
-        self.hitbox_height = 8
-        self.hitbox_width = 6
+        
         self.sound_allowed = True
         self.sound_trigger = False
+
+        self.animation_cycle = -1
         self.atk_sprite = 'snipear_2'
         self.rest_sprite = 'snipear_1'
         self.angle_store = 0
+
         self.player = player
+
         self.anchor = ('left','center')
+        self.hitbox_height = 8
+        self.hitbox_width = 6
+
         self.base_gap = 32   
         self.current_gap = 32  
+        self.return_speed = 0.075
+
         self.attack_buffer = 0
         self.attack_speed = 55
         self.cooldown = 0
-        self.return_speed = 0.075
+
         self.shot_attack_speed = 600
         self.shot_cooldown = 0
         self.shot_buffer = 0
         
     def attack(self, is_mute):
-
         if self.cooldown != 0: return
 
         if not is_mute: sounds.attack.play()
@@ -46,7 +52,6 @@ class Snipear(Actor):
         self.current_gap = 80
 
     def shot(self, enemies, is_mute):
-
         if self.shot_cooldown != 0: return
         
         self.shot_buffer = 0
@@ -74,16 +79,13 @@ class Snipear(Actor):
         if not is_mute: sounds.shot.play()
 
         for i in range(0, ray_length, 10):
-    
             check_x = shot_x + math.cos(angle_rad) * i
             check_y = shot_y + math.sin(angle_rad) * i
             
             point = (check_x, check_y)
 
             for enemy in enemies[:]:
-
                 if enemy.hitbox().collidepoint(point):
-                    
                     self.impacts.append({"pos": enemy.topleft, "life": 5})
                     enemies.remove(enemy)
 
@@ -94,7 +96,6 @@ class Snipear(Actor):
                     self.kills += 2.5
 
     def update(self, mouse_pos, enemies, is_mute):
-
         self.cooldown = max(self.cooldown - 1, 0)
         self.shot_cooldown = max(self.shot_cooldown - 1, 0)
 
@@ -126,12 +127,10 @@ class Snipear(Actor):
             self.sound_allowed = True  
 
     def check_collisions(self, enemies, is_mute):
-     
         num_points = 7
         spacing = 16
 
         for i in range(num_points):
-
             angle_rad = math.radians(-self.angle_store)
             
             check_x = self.x + math.cos(angle_rad) * (i * spacing)
@@ -147,9 +146,7 @@ class Snipear(Actor):
             ) 
 
             for enemy in enemies[:]:
-
                 if temp_rect.colliderect(enemy.hitbox()):
-
                     self.impacts.append({"pos":(enemy.topleft), "life": 2})
                     enemies.remove(enemy)
 

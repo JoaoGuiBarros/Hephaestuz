@@ -9,36 +9,35 @@ from scripts.snipear import Snipear
 import math
 import random
 
-music_vol = 0
-is_mute = False
+music_vol    = 0
+is_mute      = False
+
 key_cooldown = 0
+mouse_pos    = (0, 0)
 
-background = Actor('background')
+hide_tips    = False
 
-game_timer = 0
-game_score = 0
-game_state = "menu_state"
+game_timer   = 0
+game_score   = 0
+game_state   = "menu_state"
 
-is_paused = True
-hitstop = 0 # hit "pause" effect
-hide_tips = False
+is_paused    = True
+hitstop      = 0 
 
-player = Player()
-snipear = Snipear(player)
+background   = Actor('background')
 
-mouse_pos = (0, 0)
+player       = Player()
+snipear      = Snipear(player)
 
-enemies = []
-spawn_timer = random.choice((20,40,60))
+enemies      = []
+spawn_timer  = random.choice((20,40,60))
 
 def spawn_manager():
-
     global spawn_timer, game_timer
 
     spawn_timer -= 1
 
     if spawn_timer <= 0 and len(enemies) < 25:
-
         spawn_timer = random.choice((90,120,150,180)) - min(game_timer // 150, 60)
         spawn_pos = ()
 
@@ -50,44 +49,46 @@ def spawn_manager():
         enemies.append(Enemy(spawn_pos))
 
 def enemy_self_collision(enemy):
-
     for other in enemies:
 
         if enemy != other:
-        
             dist = max(math.sqrt((enemy.x - other.x)**2 + (enemy.y - other.y)**2), 1)
             
             if dist < 40:
-
                 enemy.x -= (other.x - enemy.x) / dist * 0.5
                 enemy.y -= (other.y - enemy.y) / dist * 0.5
 
 def collision_to_player(enemy):
-
     global hitstop, music_vol
 
     if enemy.hitbox().colliderect(player.hitbox()) and player.iframes == 0: 
-
         if not is_mute: sounds.player_hurt.play()
 
         snipear.impacts.append({"pos":player.topleft, "life":1})
 
         player.health -= 1
+        player.speed = 12
         player.iframes = 120
         
         music_vol = 0
         hitstop = 15
-        player.speed = 12
 
 def enemy_manager():
-
     spawn_manager()
 
     for enemy in enemies:
-
         enemy.follow(player.pos)
         enemy_self_collision(enemy)
         collision_to_player(enemy)
+
+btn_start_rect = Rect(0, 0, 250, 40)
+btn_start_rect.center = (WIDTH // 2, HEIGHT // 2 + 80)
+
+btn_mute_rect = Rect(0, 0, 250, 40)
+btn_mute_rect.center = (WIDTH // 2, HEIGHT // 2 + 120)
+
+btn_quit_rect = Rect(0, 0, 250, 40)
+btn_quit_rect.center = (WIDTH // 2, HEIGHT // 2 + 160)
 
 def on_mouse_move(pos):
 
@@ -98,25 +99,26 @@ def on_mouse_down(button, pos):
 
     global is_paused, game_state, is_mute
 
-    if button == mouse.RIGHT and not is_paused: snipear.shot_buffer = 10 # Shot input
-    elif button == mouse.LEFT and not is_paused: snipear.attack_buffer = 10 # Attack input
+    if button == mouse.RIGHT and not is_paused:  snipear.shot_buffer   = 10 
+    elif button == mouse.LEFT and not is_paused: snipear.attack_buffer = 10 
 
     if button == mouse.LEFT and is_paused:
 
-        # START/RESTART
         if btn_start_rect.collidepoint(pos):
+
             if not is_mute: sounds.interact.play()
+
             if game_state == "restart_state": reset_attributes()
             game_state = "play_state"
             is_paused = False
+
             music.play('bgm')
 
-        # MUTE
         elif btn_mute_rect.collidepoint(pos):
+
             is_mute = not is_mute
             sounds.interact.play()
 
-        # QUIT
         elif btn_quit_rect.collidepoint(pos):
 
             if game_state == "restart_state": 
@@ -130,14 +132,11 @@ def update():
 
     global game_timer, game_state, is_paused, hitstop, music_vol, is_mute, key_cooldown
 
-    ### Always running ###
-
     key_cooldown = max(key_cooldown - 1, 0)
 
     if is_mute or is_paused: music_vol = 0
 
     if game_state == "play_state":
-
         if hitstop != 0: is_paused = True
         else: is_paused = False
 
@@ -148,12 +147,9 @@ def update():
 
     if is_paused: return
 
-    ### Play state loop ###
-
     game_timer += 1
 
     player.move(keyboard)
-
     player.iframes = max(player.iframes - 1, 0)
     
     if player.iframes % 3 == 0: player.hitflash = not player.hitflash
@@ -161,7 +157,7 @@ def update():
 
     enemy_manager()
 
-    if player.health == 0: # Game Over
+    if player.health == 0: 
 
         game_state = "restart_state"
         is_paused = True
@@ -172,18 +168,11 @@ def update():
 def animate(obj): 
 
     if obj.animation_cycle == -1: return 
+
     obj.animation_cycle += .1
     obj.animation_cycle = obj.animation_cycle % len(obj.sprite_animation)
+
     obj.image = obj.sprite_animation[math.floor(obj.animation_cycle)]
-
-btn_start_rect = Rect(0, 0, 250, 40)
-btn_start_rect.center = (WIDTH // 2, HEIGHT // 2 + 80)
-
-btn_mute_rect = Rect(0, 0, 250, 40)
-btn_mute_rect.center = (WIDTH // 2, HEIGHT // 2 + 120)
-
-btn_quit_rect = Rect(0, 0, 250, 40)
-btn_quit_rect.center = (WIDTH // 2, HEIGHT // 2 + 160)
 
 def draw():
 
@@ -241,8 +230,6 @@ def draw():
         if getattr(obj, 'hitflash', False): continue
 
         obj.draw() 
-
-    
 
     if snipear.shot_trail["life"] > 0:
         
@@ -361,8 +348,6 @@ def draw():
             scolor=(34,32,52)
         )
 
-    # Menu Buttons
-
     if is_paused and not game_state == "play_state":
 
         screen.draw.text(
@@ -397,7 +382,6 @@ def reset_attributes():
 
     global spawn_timer, game_timer, game_state, hitstop, enemies, game_score
 
-    # Game attributes
     game_score = 0
     game_timer = 0
 
@@ -406,7 +390,6 @@ def reset_attributes():
 
     hitstop = 0
 
-    # Player
     player.anchor = ('center', 'center')
     player.pos = (WIDTH // 2, HEIGHT // 2)
     player.anchor = ('center','bottom')
@@ -419,7 +402,6 @@ def reset_attributes():
     player.animation_cycle = 0
     player.hitflash = False
 
-    # Snipear
     snipear.kills = 0
 
     snipear.attack_buffer = 0
@@ -436,7 +418,6 @@ def on_key_down(key):
 
     if key_cooldown == 0:
 
-         # Start (or Restart) the game
         if key == keys.RETURN and (game_state == "restart_state" or game_state == "menu_state"):
 
             key_cooldown = 30
@@ -449,7 +430,6 @@ def on_key_down(key):
             if game_state == "restart_state": reset_attributes()
             game_state = "play_state"
 
-        # Mute (or Demute)
         elif key == keys.M : 
 
             key_cooldown = 30
@@ -457,7 +437,6 @@ def on_key_down(key):
 
             is_mute = not is_mute
 
-        # Go back to menu
         elif key == keys.ESCAPE and game_state == "play_state":
 
             key_cooldown = 30
@@ -467,7 +446,6 @@ def on_key_down(key):
             game_state = "menu_state"
             is_paused = True
 
-        # Quit
         elif key == keys.ESCAPE and game_state == "restart_state": 
             game_state = "menu_state"
             reset_attributes()
