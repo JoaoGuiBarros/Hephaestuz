@@ -1,12 +1,3 @@
-''' DISCLAMER: Its not possible to center the game window on Windows with pure Pgzero alone and
-for the limitations there were given to this project, i cannot "import os". It's a small issue
-that will only be a problem in the moment that you open the game, but i think is good to put
-the option if you so much disere '''
-
-### CENTER THE WINDOW ON LAUNCH, if it's not doing already (DE-COMMENT TO ACTIVATE) ###
-#import os
-#os.environ['SDL_VIDEO_CENTERED'] = '1'
-
 import pgzrun
 from pygame import Rect
 
