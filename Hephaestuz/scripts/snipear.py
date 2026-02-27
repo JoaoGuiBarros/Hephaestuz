@@ -29,7 +29,7 @@ class Snipear(Actor):
         self.base_gap = 32   
         self.current_gap = 32  
         self.attack_buffer = 0
-        self.attack_speed = 65
+        self.attack_speed = 55
         self.cooldown = 0
         self.return_speed = 0.075
         self.shot_attack_speed = 600
@@ -153,7 +153,7 @@ class Snipear(Actor):
                     self.impacts.append({"pos":(enemy.topleft), "life": 2})
                     enemies.remove(enemy)
 
-                    self.cooldown = max(self.cooldown - 10, 0)
+                    self.cooldown = max(self.cooldown - 7, 0)
                     self.shot_cooldown = max(self.shot_cooldown - 60, 0)
                     self.kills += 1
 

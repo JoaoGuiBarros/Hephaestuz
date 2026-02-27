@@ -48,7 +48,7 @@ def spawn_manager():
 
     if spawn_timer <= 0 and len(enemies) < 25:
 
-        spawn_timer = random.choice((0,30,60,90,120)) - min(game_timer // 150, 60)
+        spawn_timer = random.choice((90,120,150,180)) - min(game_timer // 150, 60)
         spawn_pos = ()
 
         spawn_axi = random.choice(("x","y"))
@@ -85,7 +85,7 @@ def collision_to_player(enemy):
         player.iframes = 120
         
         music_vol = 0
-        hitstop = 10
+        hitstop = 15
         player.speed = 12
 
 def enemy_manager():
@@ -234,7 +234,7 @@ def draw():
 
                 impact["life"] -= 1
                 if impact["life"] == 0: snipear.impacts.remove(impact)
-                
+
     for obj in render_list:
 
         if obj.has_shadow and not is_paused:
@@ -257,7 +257,7 @@ def draw():
         
         if snipear.shot_cooldown == snipear.shot_attack_speed: 
             snipear.shot_cooldown  -= 1 
-            hitstop = 10
+            hitstop = 8
 
         angle_rad = math.atan2(
             snipear.shot_trail["end_pos"][1] - snipear.shot_trail["init_pos"][1],
@@ -358,7 +358,7 @@ def draw():
             scolor=(34,32,52)
         )
 
-        screen.blit('player_idle_1', (WIDTH // 2 - player.width // 2, HEIGHT // 2 - player.height // 2))
+        screen.blit('player_walk_3', (WIDTH // 2 - player.width // 2, HEIGHT // 2 - player.height // 2))
 
         if not hide_tips: screen.draw.text(
             f"ENTER Restart || M to {"Mute" if not is_mute else "Demute"} || ESC to go to Menu || H to Hide tips", 
@@ -477,7 +477,11 @@ def on_key_down(key):
             is_paused = True
 
         # Quit
-        elif key == keys.ESCAPE and is_paused: exit()
+        elif key == keys.ESCAPE and game_state == "restart_state": 
+            game_state = "menu_state"
+            reset_attributes()
+
+        elif key == keys.ESCAPE and game_state == "menu_state": exit()
 
         if key == keys.H: hide_tips = not hide_tips
 
